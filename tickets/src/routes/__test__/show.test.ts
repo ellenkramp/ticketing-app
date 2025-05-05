@@ -15,8 +15,6 @@ it("returns ticket if ticket is found", async () => {
     .send(body)
     .expect(201);
 
-  console.log(response.body.id);
-
   const ticketResponse = await request(app)
     .get(`/api/tickets/${response.body.id}`)
     .send()
