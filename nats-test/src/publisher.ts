@@ -1,5 +1,6 @@
 import nats from "node-nats-streaming";
 import { randomBytes } from "crypto";
+import { TicketCreatedPublisher } from "./events/ticket-created-publisher";
 
 console.clear();
 const clientId = randomBytes(4).toString("hex");
@@ -8,7 +9,7 @@ const client = nats.connect("ticketing", clientId, {
   url: "http://localhost:4222",
 });
 
-client.on("connect", () => {
+client.on("connect", async () => {
   console.log("Publisher connected to NATS");
 
   client.on("close", () => {
@@ -16,15 +17,26 @@ client.on("connect", () => {
     process.exit();
   });
 
-  const data = JSON.stringify({
-    id: "123",
-    title: "concert",
-    price: 20,
-  });
+  const publisher = new TicketCreatedPublisher(client);
+  try {
+    await publisher.publish({
+      id: "2123",
+      title: "concert",
+      price: 20,
+    });
+  } catch (err) {
+    console.error(err);
+  }
 
-  client.publish("ticket:created", data, () => {
-    console.log("EVENT PUBLISHED", data);
-  });
+  // const data = JSON.stringify({
+  //   id: "123",
+  //   title: "concert",
+  //   price: 20,
+  // });
+
+  // client.publish("ticket:created", data, () => {
+  //   console.log("EVENT PUBLISHED", data);
+  // });
 });
 
 process.on("SIGINT", () => client.close());

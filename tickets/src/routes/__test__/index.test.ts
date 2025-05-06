@@ -1,6 +1,5 @@
 import request from "supertest";
 import { app } from "../../app";
-import { Ticket } from "../../models/ticket";
 
 const createTicket = () => {
   const body = { price: 20, title: "Yada" };
