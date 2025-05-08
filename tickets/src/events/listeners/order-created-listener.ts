@@ -1,4 +1,9 @@
-import { OrderCreatedEvent, Listener, Subjects } from "@ekramp/common";
+import {
+  OrderCreatedEvent,
+  Listener,
+  Subjects,
+  NotFoundError,
+} from "@ekramp/common";
 import { Message } from "node-nats-streaming";
 import { queueGroupName } from "./queue-group-name";
 import { Ticket } from "../../models/ticket";
@@ -13,7 +18,7 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
     const ticket = await Ticket.findById(data.ticket.id);
     // if not Ticket, err
     if (!ticket) {
-      throw new Error("Ticket not found");
+      throw new NotFoundError();
     }
 
     // reserve ticket

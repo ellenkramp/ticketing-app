@@ -1,4 +1,9 @@
-import { Listener, OrderCanceledEvent, Subjects } from "@ekramp/common";
+import {
+  Listener,
+  NotFoundError,
+  OrderCanceledEvent,
+  Subjects,
+} from "@ekramp/common";
 import { Message } from "node-nats-streaming";
 import { queueGroupName } from "./queue-group-name";
 import { Ticket } from "../../models/ticket";
@@ -10,7 +15,7 @@ export class OrderCanceledListener extends Listener<OrderCanceledEvent> {
   onMessage = async (data: OrderCanceledEvent["data"], msg: Message) => {
     const ticket = await Ticket.findById(data.ticket.id);
     if (!ticket) {
-      throw new Error("Ticket not found");
+      throw new NotFoundError();
     }
     ticket.set({ orderId: undefined });
 

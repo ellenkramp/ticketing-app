@@ -1,3 +1,4 @@
+import { DatabaseConnectionError } from "@ekramp/common";
 import nats, { Stan } from "node-nats-streaming";
 
 class NatsWrapper {
@@ -5,7 +6,8 @@ class NatsWrapper {
 
   get client() {
     if (!this._client) {
-      throw new Error("cannot access nats client before connecting");
+      console.log("cannot access nats client before connecting");
+      throw new DatabaseConnectionError();
     }
     return this._client;
   }
