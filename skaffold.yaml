@@ -40,3 +40,19 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: ellenkramp/expiration
+      context: expiration
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
+    - image: ellenkramp/payments
+      context: payments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
