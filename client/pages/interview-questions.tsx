@@ -1,6 +1,7 @@
 import React from 'react';
 import Accordion from '../components/Accordion';
 import TodoList from '../components/TodoList';
+import Counter from '../components/Counter';
 
 const InterviewQuestions = () => {
   const accordionItems = [
@@ -66,11 +67,33 @@ const InterviewQuestions = () => {
         <TodoList initialTodos={initialTodos} />
       </section>
 
+      {/* Counter Section */}
+      <section className="mb-5">
+        <h2 className="mb-3">Counter Component</h2>
+        <p className="text-muted mb-3">
+          A simple counter with increment, decrement, and reset functionality.
+        </p>
+        <div className="row">
+          <div className="col-md-4 mb-3">
+            <h5>Basic Counter</h5>
+            <Counter />
+          </div>
+          <div className="col-md-4 mb-3">
+            <h5>Counter with Custom Step</h5>
+            <Counter initialValue={10} step={5} />
+          </div>
+          <div className="col-md-4 mb-3">
+            <h5>Counter with Range Limits</h5>
+            <Counter initialValue={5} min={0} max={10} />
+          </div>
+        </div>
+      </section>
+
       {/* Component Features */}
       <section className="mb-5">
         <h2 className="mb-3">Features Demonstrated</h2>
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-4">
             <div className="card mb-3">
               <div className="card-body">
                 <h5 className="card-title">Accordion Component</h5>
@@ -85,7 +108,7 @@ const InterviewQuestions = () => {
               </div>
             </div>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-4">
             <div className="card mb-3">
               <div className="card-body">
                 <h5 className="card-title">Todo List Component</h5>
@@ -96,6 +119,21 @@ const InterviewQuestions = () => {
                   <li>✓ Array manipulation methods</li>
                   <li>✓ Computed values (statistics)</li>
                   <li>✓ Conditional styling</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="card mb-3">
+              <div className="card-body">
+                <h5 className="card-title">Counter Component</h5>
+                <ul className="list-unstyled">
+                  <li>✓ State updates with callbacks</li>
+                  <li>✓ Optional props with defaults</li>
+                  <li>✓ Boundary validation</li>
+                  <li>✓ Disabled button states</li>
+                  <li>✓ Flexible configuration</li>
+                  <li>✓ Multiple instances</li>
                 </ul>
               </div>
             </div>
