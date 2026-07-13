@@ -1,7 +1,21 @@
-import nats, { Stan } from "node-nats-streaming";
+import {
+  connect,
+  NatsConnection,
+  JetStreamClient,
+  JetStreamManager,
+} from "nats";
+import { Subjects } from "@ekramp/common";
+
+const STREAM_SUBJECTS = Object.values(Subjects);
+
+const normalizeUrl = (url: string) =>
+  url.replace(/^http:\/\//, "nats://").replace(/^https:\/\//, "tls://");
 
 class NatsWrapper {
-  private _client?: Stan;
+  private _client?: JetStreamClient;
+  private _jsm?: JetStreamManager;
+  private _nc?: NatsConnection;
+  private _streamName = "ticketing";
 
   get client() {
     if (!this._client) {
@@ -10,18 +24,46 @@ class NatsWrapper {
     return this._client;
   }
 
-  connect(clusterId: string, clientId: string, url: string) {
-    this._client = nats.connect(clusterId, clientId, { url });
+  get jsm() {
+    if (!this._jsm) {
+      throw new Error("cannot access nats jetstream manager before connecting");
+    }
+    return this._jsm;
+  }
 
-    return new Promise<void>((resolve, reject) => {
-      this.client!.on("connect", () => {
-        console.log("Connected to NATS");
-        resolve();
-      });
-      this.client!.on("error", (err) => {
-        reject(err);
-      });
+  get streamName() {
+    return this._streamName;
+  }
+
+  async connect(streamName: string, clientId: string, url: string) {
+    this._streamName = streamName;
+    this._nc = await connect({
+      servers: normalizeUrl(url),
+      name: clientId,
     });
+
+    this._nc.closed.then(() => {
+      console.log("NATS CONNECTION CLOSED");
+      process.exit();
+    });
+
+    this._jsm = await this._nc.jetstreamManager();
+
+    try {
+      await this._jsm.streams.info(streamName);
+    } catch {
+      await this._jsm.streams.add({
+        name: streamName,
+        subjects: STREAM_SUBJECTS,
+      });
+    }
+
+    this._client = this._nc.jetstream();
+    console.log("Connected to NATS JetStream");
+  }
+
+  close() {
+    return this._nc?.drain();
   }
 }
 

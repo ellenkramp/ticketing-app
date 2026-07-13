@@ -1,4 +1,4 @@
-import { Message } from "node-nats-streaming";
+import { EventMessage as Message } from "@ekramp/common";
 import {
   Subjects,
   Listener,

@@ -1,0 +1,19 @@
+{
+  "name": "ticketing",
+  "private": true,
+  "workspaces": [
+    "auth",
+    "tickets",
+    "orders",
+    "payments",
+    "expiration",
+    "client",
+    "common",
+    "e2e"
+  ],
+  "scripts": {
+    "build:common": "npm run build -w @ekramp/common",
+    "test:ci": "npm run test:ci -w auth -w tickets -w orders -w payments -w expiration --if-present",
+    "test:e2e": "npm run test -w ticketing-e2e"
+  }
+}

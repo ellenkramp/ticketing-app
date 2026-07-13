@@ -1,58 +1,58 @@
 apiVersion: skaffold/v2alpha3
 kind: Config
 deploy:
-  kubectl:
-    manifests:
-      - ./infra/k8s/*
+  kustomize:
+    paths:
+      - ./infra/k8s/overlays/dev
 build:
   local:
     push: false
   artifacts:
     - image: ellenkramp/auth
-      context: auth
+      context: .
       docker:
-        dockerfile: Dockerfile
+        dockerfile: auth/Dockerfile
       sync:
         manual:
-          - src: "src/**/*.ts"
-            dest: .
+          - src: "auth/src/**/*.ts"
+            dest: /app
     - image: ellenkramp/client
       context: client
       docker:
-        dockerfile: Dockerfile
+        dockerfile: Dockerfile.dev
       sync:
         manual:
           - src: "/**/*.js"
             dest: .
     - image: ellenkramp/tickets
-      context: tickets
+      context: .
       docker:
-        dockerfile: Dockerfile
+        dockerfile: tickets/Dockerfile
       sync:
         manual:
-          - src: "src/**/*.ts"
-            dest: .
+          - src: "tickets/src/**/*.ts"
+            dest: /app
     - image: ellenkramp/orders
-      context: orders
+      context: .
       docker:
-        dockerfile: Dockerfile
+        dockerfile: orders/Dockerfile
       sync:
         manual:
-          - src: "src/**/*.ts"
-            dest: .
+          - src: "orders/src/**/*.ts"
+            dest: /app
     - image: ellenkramp/expiration
-      context: expiration
+      context: .
       docker:
-        dockerfile: Dockerfile
+        dockerfile: expiration/Dockerfile
       sync:
         manual:
-          - src: "src/**/*.ts"
-            dest: .
+          - src: "expiration/src/**/*.ts"
+            dest: /app
     - image: ellenkramp/payments
-      context: payments
+      context: .
       docker:
-        dockerfile: Dockerfile
+        dockerfile: payments/Dockerfile
       sync:
         manual:
-          - src: "src/**/*.ts"
-            dest: .
+          - src: "payments/src/**/*.ts"
+            dest: /app
