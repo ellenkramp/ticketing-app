@@ -1,4 +1,4 @@
-import { Message } from "node-nats-streaming";
+import { EventMessage as Message } from "@ekramp/common";
 import { Subjects, Listener, TicketCreatedEvent } from "@ekramp/common";
 import { Ticket } from "../../models/ticket";
 import { queueGroupName } from "./queue-group-name";

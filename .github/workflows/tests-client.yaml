@@ -1,0 +1,18 @@
+name: tests-client
+
+on:
+  pull_request:
+    paths:
+      - "client/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: cd client && npm install && npm run build
+        env:
+          NEXT_PUBLIC_STRIPE_KEY: pk_test_placeholder

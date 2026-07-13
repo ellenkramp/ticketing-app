@@ -15,7 +15,7 @@ import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
-const EXPIRATION_WINDOW_SECONDS = 60 * 1000;
+const EXPIRATION_WINDOW_SECONDS = 60;
 
 router.post(
   "/api/orders",
@@ -55,7 +55,7 @@ router.post(
 
     await order.save();
 
-    new OrderCreatedPublisher(natsWrapper.client).publish({
+    await new OrderCreatedPublisher(natsWrapper.client).publish({
       id: order.id,
       version: order.version,
       status: OrderStatus.Created,
