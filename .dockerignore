@@ -1,0 +1,6 @@
+.git
+common-history.git
+**/node_modules
+**/build
+**/.next
+**/coverage

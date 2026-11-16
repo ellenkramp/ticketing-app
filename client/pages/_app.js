@@ -1,4 +1,5 @@
 import "bootstrap/dist/css/bootstrap.css";
+import "../styles/globals.css";
 import buildClient from "../api/build-client";
 import Header from "../components/Header";
 
@@ -6,7 +7,7 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
   return (
     <div>
       <Header currentUser={currentUser} />
-      <div className="container">
+      <div className="container gttx-shell">
         <Component {...pageProps} currentUser={currentUser} />
       </div>
     </div>

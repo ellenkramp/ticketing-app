@@ -1,5 +1,5 @@
 import { OrderCreatedEvent, OrderStatus } from "@ekramp/common";
-import { Message } from "node-nats-streaming";
+import { EventMessage as Message } from "@ekramp/common";
 import { natsWrapper } from "../../../nats-wrapper";
 import { OrderCreatedListener } from "../order-created-listener";
 import mongoose from "mongoose";

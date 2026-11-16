@@ -12,17 +12,25 @@ const Header = ({ currentUser }) => {
     .map(({ label, href }) => {
       return (
         <li key={href} className="nav-item">
-          <Link href={href}>{label}</Link>
+          <Link className="nav-link" href={href}>
+            {label}
+          </Link>
         </li>
       );
     });
+
   return (
-    <nav className="navbar navbar-light bg-light">
-      <Link className="navbar-brand" href="/">
-        GitTix
-      </Link>
-      <div className="d-flex justify-content-end">
-        <ul className="nav d-flex align-items-center">{links}</ul>
+    <nav className="navbar gttx-nav">
+      <div className="container gttx-nav-inner">
+        <Link className="navbar-brand gttx-brand" href="/">
+          GitTix
+        </Link>
+        <div className="d-flex justify-content-end align-items-center gap-3">
+          {currentUser && (
+            <span className="gttx-user">{currentUser.email}</span>
+          )}
+          <ul className="nav d-flex align-items-center mb-0">{links}</ul>
+        </div>
       </div>
     </nav>
   );

@@ -2,6 +2,7 @@ import express from "express";
 import "express-async-errors";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
+import rateLimit from "express-rate-limit";
 
 import { currentUserRouter } from "./routes/current-user";
 import { signinRouter } from "./routes/signin";
@@ -10,7 +11,9 @@ import { signupRouter } from "./routes/signup";
 import { errorHandler, NotFoundError } from "@ekramp/common";
 
 const app = express();
-app.set("trust proxy", true);
+// One proxy hop (ingress-nginx). Trusting every hop would let clients spoof
+// X-Forwarded-For and dodge the rate limiter below.
+app.set("trust proxy", 1);
 
 app.use(json());
 app.use(
@@ -19,6 +22,16 @@ app.use(
     secure: process.env.NODE_ENV !== "test",
   })
 );
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: process.env.NODE_ENV === "test" ? 1000 : 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use("/api/users/signin", authLimiter);
+app.use("/api/users/signup", authLimiter);
 
 app.use(currentUserRouter);
 app.use(signinRouter);

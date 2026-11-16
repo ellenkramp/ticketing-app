@@ -1,0 +1,17 @@
+name: tests-expiration
+
+on:
+  pull_request:
+    paths:
+      - "expiration/**"
+      - "common/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm install && npm run build:common && npm run typecheck -w expiration && npm run test:ci -w expiration

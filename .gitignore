@@ -1,1 +1,18 @@
 node_modules
+.DS_Store
+**/.DS_Store
+.env
+.env.*
+!.env.example
+*.log
+.next
+coverage
+dist
+build
+.turbo
+.idea
+.vscode
+*.swp
+
+# Backup of the former standalone common repo history
+common-history.git

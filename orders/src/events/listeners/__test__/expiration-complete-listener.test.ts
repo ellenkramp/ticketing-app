@@ -4,7 +4,7 @@ import { Ticket } from "../../../models/ticket";
 import { natsWrapper } from "../../../nats-wrapper";
 import { ExpirationCompleteListener } from "../expiration-complete-listener";
 import { ExpirationCompleteEvent, OrderStatus } from "@ekramp/common";
-import { Message } from "node-nats-streaming";
+import { EventMessage as Message } from "@ekramp/common";
 
 const setup = async () => {
   const listener = new ExpirationCompleteListener(natsWrapper.client);
@@ -56,7 +56,9 @@ it("emits an OrderCanceled event", async () => {
   expect(natsWrapper.client.publish).toHaveBeenCalled();
 
   const event = JSON.parse(
-    (natsWrapper.client.publish as jest.Mock).mock.calls[0][1]
+    Buffer.from(
+      (natsWrapper.client.publish as jest.Mock).mock.calls[0][1]
+    ).toString("utf8")
   );
 
   expect(event.id).toEqual(order.id);

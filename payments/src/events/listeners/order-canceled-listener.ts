@@ -6,7 +6,7 @@ import {
   Subjects,
 } from "@ekramp/common";
 import { queueGroupName } from "./queue-group-name";
-import { Message } from "node-nats-streaming";
+import { EventMessage as Message } from "@ekramp/common";
 import { Order } from "../../models/order";
 
 export class OrderCanceledListener extends Listener<OrderCanceledEvent> {

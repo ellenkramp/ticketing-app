@@ -1,5 +1,5 @@
 import { OrderCanceledEvent, OrderStatus } from "@ekramp/common";
-import { Message } from "node-nats-streaming";
+import { EventMessage as Message } from "@ekramp/common";
 import { natsWrapper } from "../../../nats-wrapper";
 import { OrderCanceledListener } from "../order-canceled-listener";
 import mongoose from "mongoose";

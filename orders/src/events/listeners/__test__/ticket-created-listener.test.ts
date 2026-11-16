@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Message } from "node-nats-streaming";
+import { EventMessage as Message } from "@ekramp/common";
 import { Subjects, TicketCreatedEvent } from "@ekramp/common";
 import { TicketCreatedListener } from "../ticket-created-listener";
 import { natsWrapper } from "../../../nats-wrapper";

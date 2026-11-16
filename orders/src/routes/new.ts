@@ -15,7 +15,10 @@ import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
-const EXPIRATION_WINDOW_SECONDS = 60 * 1000;
+// How long a buyer has to pay before the order expires. Defaults to 15
+// minutes; set ORDER_EXPIRATION_SECONDS to shorten it for local testing.
+const EXPIRATION_WINDOW_SECONDS =
+  Number(process.env.ORDER_EXPIRATION_SECONDS) || 15 * 60;
 
 router.post(
   "/api/orders",
@@ -55,7 +58,7 @@ router.post(
 
     await order.save();
 
-    new OrderCreatedPublisher(natsWrapper.client).publish({
+    await new OrderCreatedPublisher(natsWrapper.client).publish({
       id: order.id,
       version: order.version,
       status: OrderStatus.Created,
