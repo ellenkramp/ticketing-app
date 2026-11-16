@@ -14,4 +14,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - run: cd tickets && npm install && npm run test:ci
+      - run: npm install && npm run build:common && npm run typecheck -w tickets && npm run test:ci -w tickets

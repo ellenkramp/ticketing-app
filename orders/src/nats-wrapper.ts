@@ -42,7 +42,7 @@ class NatsWrapper {
       name: clientId,
     });
 
-    this._nc.closed.then(() => {
+    this._nc.closed().then(() => {
       console.log("NATS CONNECTION CLOSED");
       process.exit();
     });
