@@ -12,6 +12,7 @@ build:
       context: .
       docker:
         dockerfile: auth/Dockerfile
+        target: dev
       sync:
         manual:
           - src: "auth/src/**/*.ts"
@@ -28,6 +29,7 @@ build:
       context: .
       docker:
         dockerfile: tickets/Dockerfile
+        target: dev
       sync:
         manual:
           - src: "tickets/src/**/*.ts"
@@ -36,6 +38,7 @@ build:
       context: .
       docker:
         dockerfile: orders/Dockerfile
+        target: dev
       sync:
         manual:
           - src: "orders/src/**/*.ts"
@@ -44,6 +47,7 @@ build:
       context: .
       docker:
         dockerfile: expiration/Dockerfile
+        target: dev
       sync:
         manual:
           - src: "expiration/src/**/*.ts"
@@ -52,6 +56,7 @@ build:
       context: .
       docker:
         dockerfile: payments/Dockerfile
+        target: dev
       sync:
         manual:
           - src: "payments/src/**/*.ts"

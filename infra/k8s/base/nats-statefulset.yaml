@@ -1,8 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: nats-depl
+  name: nats
 spec:
+  serviceName: nats-srv
   replicas: 1
   selector:
     matchLabels:
@@ -15,10 +16,15 @@ spec:
       containers:
         - name: nats
           image: nats:2.10-alpine
-          args: ["-js", "-m", "8222"]
+          # -sd puts the JetStream store on the persistent volume so streams
+          # and durable consumers survive a pod restart.
+          args: ["-js", "-sd", "/data", "-m", "8222"]
           ports:
             - containerPort: 4222
             - containerPort: 8222
+          volumeMounts:
+            - name: nats-data
+              mountPath: /data
           resources:
             requests:
               cpu: 50m
@@ -38,6 +44,15 @@ spec:
               port: 8222
             initialDelaySeconds: 15
             periodSeconds: 20
+  volumeClaimTemplates:
+    - metadata:
+        name: nats-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
 ---
 apiVersion: v1
 kind: Service

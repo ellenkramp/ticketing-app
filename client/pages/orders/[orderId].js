@@ -74,7 +74,11 @@ const Order = ({ order, currentUser }) => {
       {errors}
       {cancelErrors}
       <div className="gttx-actions">
-        {stripeKey ? (
+        {!canCancel ? (
+          <div className="alert alert-info" role="alert">
+            This order is {order.status} and can no longer be paid for.
+          </div>
+        ) : stripeKey ? (
           <StripeCheckout
             token={({ id }) => doRequest({ token: id })}
             stripeKey={stripeKey}

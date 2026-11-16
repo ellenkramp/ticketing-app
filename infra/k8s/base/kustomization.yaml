@@ -12,5 +12,5 @@ resources:
   - expiration-depl.yaml
   - expiration-redis-depl.yaml
   - client-depl.yaml
-  - nats-depl.yaml
+  - nats-statefulset.yaml
   - ingress-srv.yaml

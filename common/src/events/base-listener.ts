@@ -14,7 +14,7 @@ interface Event {
 
 export interface EventMessage {
   ack(): void;
-  nak(): void;
+  nak(delayMs?: number): void;
   getData(): string | Buffer;
 }
 
@@ -28,15 +28,32 @@ export abstract class Listener<T extends Event> {
     msg: EventMessage
   ) => void | Promise<void>;
   protected client: JetStreamClient;
-  protected ackWait = 5 * 1000;
+  protected ackWait = 30 * 1000;
+  protected maxDeliver = 10;
+  protected maxRetryDelay = 30 * 1000;
 
   constructor(client: JetStreamClient) {
     this.client = client;
   }
 
+  // One durable consumer per (service, subject). A consumer has a single
+  // filter subject, so listeners in the same service cannot share one.
+  get durableName() {
+    return `${this.queueGroupName}-${this.subject.replace(
+      /[^A-Za-z0-9_-]/g,
+      "-"
+    )}`;
+  }
+
+  // Exponential backoff: 1s, 2s, 4s ... capped at maxRetryDelay.
+  retryDelay(deliveryCount: number) {
+    return Math.min(1000 * 2 ** (deliveryCount - 1), this.maxRetryDelay);
+  }
+
   subscriptionOptions() {
     const opts = consumerOpts();
-    opts.durable(this.queueGroupName);
+    opts.durable(this.durableName);
+    opts.maxDeliver(this.maxDeliver);
     opts.manualAck();
     opts.ackExplicit();
     opts.ackWait(this.ackWait);
@@ -65,7 +82,15 @@ export abstract class Listener<T extends Event> {
             `Error processing ${this.subject} / ${this.queueGroupName}`,
             err
           );
-          msg.nak();
+          const attempt = m.info.deliveryCount;
+          if (attempt >= this.maxDeliver) {
+            console.error(
+              `Giving up on ${this.subject} / ${this.queueGroupName} after ${attempt} attempts (stream seq ${m.seq})`
+            );
+            m.term();
+          } else {
+            msg.nak(this.retryDelay(attempt));
+          }
         }
       }
     })().catch((err) => {
@@ -76,7 +101,7 @@ export abstract class Listener<T extends Event> {
   wrapMessage(m: JsMsg): EventMessage {
     return {
       ack: () => m.ack(),
-      nak: () => m.nak(),
+      nak: (delayMs?: number) => m.nak(delayMs),
       getData: () => sc.decode(m.data),
     };
   }

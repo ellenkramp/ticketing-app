@@ -3,6 +3,16 @@ kind: Kustomization
 resources:
   - ../../base
   - network-policies.yaml
+replicas:
+  - name: auth-depl
+    count: 2
+  - name: tickets-depl
+    count: 2
+  - name: orders-depl
+    count: 2
+  - name: payments-depl
+    count: 2
+  - name: client-depl
+    count: 2
 patches:
-  - path: replica-patch.yaml
   - path: ingress-patch.yaml
